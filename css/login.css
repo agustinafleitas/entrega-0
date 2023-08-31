@@ -1,7 +1,7 @@
 /*Start login style*/
 
 #IngresoLogin{
-    background-image: url(/img/Fondo_login.png) !important; /*"important" lo que hace es priorizar*/
+    background-image: url(/img/Fondologin.png) !important; /*"important" lo que hace es priorizar*/
     background-repeat: no-repeat;
     background-size: cover;
   }
