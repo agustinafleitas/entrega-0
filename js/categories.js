@@ -50,7 +50,7 @@ function showCategoriesList(){
             ((maxCount == undefined) || (maxCount != undefined && parseInt(category.productCount) <= maxCount))){
 
             htmlContentToAppend += `
-            <div onclick="setCatID(${category.id})" class="list-group-item list-group-item-action cursor-active">
+            <div onclick="setCatID(${category.id})" class="list-group-item list-group-item-action cursor-active ms-1">
                 <div class="row">
                     <div class="col-3">
                         <img src="${category.imgSrc}" alt="${category.description}" class="img-thumbnail">
@@ -58,7 +58,7 @@ function showCategoriesList(){
                     <div class="col">
                         <div class="d-flex w-100 justify-content-between">
                             <h4 class="mb-1">${category.name}</h4>
-                            <small class="text-muted">${category.productCount} artículos</small>
+                            <small class="text-muted text-end">${category.productCount} artículos</small>
                         </div>
                         <p class="mb-1">${category.description}</p>
                     </div>
@@ -87,12 +87,14 @@ function sortAndShowCategories(sortCriteria, categoriesArray){
 //Función que se ejecuta una vez que se haya lanzado el evento de
 //que el documento se encuentra cargado, es decir, se encuentran todos los
 //elementos HTML presentes.
+
+let originalArray = [];
 document.addEventListener("DOMContentLoaded", function(e){
     getJSONData(CATEGORIES_URL).then(function(resultObj){
         if (resultObj.status === "ok"){
-            currentCategoriesArray = resultObj.data
-            showCategoriesList()
-            //sortAndShowCategories(ORDER_ASC_BY_NAME, resultObj.data);
+            currentCategoriesArray = resultObj.data;
+            originalArray = resultObj.data;
+            showCategoriesList();
         }
     });
 
@@ -139,5 +141,25 @@ document.addEventListener("DOMContentLoaded", function(e){
         }
 
         showCategoriesList();
+    });
+
+    //* Filtar Categorías con Barra de búsqueda *//
+
+    document.getElementById("search-bar").addEventListener("input" , function () {
+        const busqueda = document.getElementById("search-bar").value.toLowerCase();
+        const catFiltradas = currentCategoriesArray.filter(categ => categ.name.toLowerCase().includes(busqueda));
+        const catcontainer = document.getElementById("cat-list-container");
+        if(document.getElementById("search-bar").value !== "") {
+            if(catFiltradas.length === 0) {
+                catcontainer.innerHTML = "<p>Categoría no encontrada...<p>";
+            } else {
+                currentCategoriesArray = catFiltradas;
+                catcontainer.innerHTML="";
+                showCategoriesList();
+            }
+        } else {
+            currentCategoriesArray = originalArray;
+            showCategoriesList();
+        }
     });
 });
